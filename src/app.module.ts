@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { GroupsModule } from './groups/groups.module';
+import { RoutinesModule } from './routines/routines.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { GroupsModule } from './groups/groups.module';
       playground: true,
     }),
     GroupsModule,
+    RoutinesModule,
   ],
 })
 export class AppModule {}
