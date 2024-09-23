@@ -5,6 +5,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { GroupsModule } from './groups/groups.module';
 import { RoutinesModule } from './routines/routines.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RoutinesModule } from './routines/routines.module';
     }),
     GroupsModule,
     RoutinesModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
