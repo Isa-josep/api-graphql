@@ -1,10 +1,17 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './user.entity/user.entity';
+// Creamos un DTO para la respuesta del login
+import { BadRequestException } from '@nestjs/common';
+import { AuthService } from './auth/auth.service';
+import { LoginResponse } from './dto/login-response.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService, // Servicio para manejar la autenticación
+  ) {}
 
   // Consulta para obtener todos los usuarios
   @Query(returns => [User])
@@ -52,5 +59,29 @@ export class UsersResolver {
   async deleteUser(@Args('id', { type: () => Int }) id: number) {
     await this.usersService.delete(id);
     return true;
+  }
+
+  // Mutación para iniciar sesión
+  @Mutation(returns => LoginResponse)
+  async login(
+    @Args('correo') correo: string,
+    @Args('contrasena') contrasena: string,
+  ): Promise<LoginResponse> {
+    const user = await this.usersService.findByEmail(correo);
+    if (!user) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    const isPasswordValid = await this.authService.validatePassword(contrasena, user.contrasena);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Contraseña incorrecta');
+    }
+
+    const token = this.authService.generateToken(user);
+
+    return {
+      token,
+      user,
+    };
   }
 }
