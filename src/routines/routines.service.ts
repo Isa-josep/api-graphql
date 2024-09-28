@@ -23,8 +23,7 @@ export class RoutinesService {
     return this.routinesRepository.find({ where: { grupo_id } });
   }
 
-  // Cambiar findByDate para buscar por creado_en
-  async findByDate(creado_en: Date): Promise<Routine[]> {
-    return this.routinesRepository.find({ where: { creado_en } });
+  async findByDate(fecha_ejercicio: Date): Promise<Routine[]> {
+    return this.routinesRepository.find({ where: { fecha_ejercicio } });  // Buscar por fecha programada
   }
 }

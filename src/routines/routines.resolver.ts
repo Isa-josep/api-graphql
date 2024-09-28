@@ -12,33 +12,33 @@ export class RoutinesResolver {
   }
 
   @Mutation(returns => Routine)
-async createRoutine(
-  @Args('nombre') nombre: string,
-  @Args('descripcion') descripcion: string,
-  @Args('usuario_id', { type: () => Int }) usuario_id: number,
-  @Args('grupo_id', { type: () => Int }) grupo_id: number,
-  @Args('creado_en') creado_en: Date,  // Mantener creado_en como obligatorio
-  @Args('video_url', { nullable: true }) video_url?: string,  // Colocar video_url al final
-) {
-  return this.routinesService.create({
-    nombre,
-    descripcion,
-    usuario_id,
-    grupo_id,
-    video_url,
-    creado_en,
-  });
-}
-
+  async createRoutine(
+    @Args('nombre') nombre: string,
+    @Args('descripcion') descripcion: string,
+    @Args('usuario_id', { type: () => Int }) usuario_id: number,
+    @Args('grupo_id', { type: () => Int }) grupo_id: number,
+    @Args('fecha_ejercicio') fecha_ejercicio: Date,  // Fecha programada
+    @Args('video_url', { nullable: true }) video_url?: string,
+  ) {
+    const creado_en = new Date();  // Fecha de creación automática
+    return this.routinesService.create({
+      nombre,
+      descripcion,
+      usuario_id,
+      grupo_id,
+      video_url,
+      creado_en,
+      fecha_ejercicio,
+    });
+  }
 
   @Query(returns => [Routine])
   async routinesByGroup(@Args('grupo_id', { type: () => Int }) grupo_id: number) {
     return this.routinesService.findByGroup(grupo_id);
   }
 
-  // Cambiar la query para usar creado_en en lugar de fecha_ejercicio
   @Query(returns => [Routine])
-  async routinesByDate(@Args('creado_en') creado_en: Date) {
-    return this.routinesService.findByDate(creado_en);
+  async routinesByDate(@Args('fecha_ejercicio') fecha_ejercicio: Date) {
+    return this.routinesService.findByDate(fecha_ejercicio);
   }
 }

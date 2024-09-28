@@ -29,6 +29,10 @@ export class Routine {
   video_url: string;
 
   @Column()
-  @Field()  // Cambiar a creado_en
-  creado_en: Date;
+  @Field()
+  fecha_ejercicio: Date;  // Campo para la fecha programada de la rutina
+
+  @Column()
+  @Field()
+  creado_en: Date;  // Fecha de creación de la rutina
 }
