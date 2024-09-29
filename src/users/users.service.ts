@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity/user.entity';
 import * as bcrypt from 'bcrypt';
+import { GrupoUsuario } from 'src/groups/group.entity/grupo-usuario.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+
+    @InjectRepository(GrupoUsuario) // Inyecta el repositorio de GrupoUsuario
+    private grupoUsuariosRepository: Repository<GrupoUsuario>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -36,5 +40,14 @@ export class UsersService {
 
   async delete(id: number): Promise<void> {
     await this.usersRepository.delete(id);
+  }
+
+  // Método para encontrar usuarios sin grupo
+  async findUsersWithoutGroup(): Promise<User[]> {
+    return await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.grupoUsuarios', 'grupoUsuario')
+      .where('grupoUsuario.id IS NULL') // Asegúrate de que el usuario no esté en ningún grupo
+      .getMany();
   }
 }
