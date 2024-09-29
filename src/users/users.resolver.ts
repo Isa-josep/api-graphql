@@ -15,8 +15,8 @@ export class UsersResolver {
 
   // Consulta para obtener todos los usuarios
   @Query(returns => [User])
-  async users() {
-    return this.usersService.findAll();
+  async obtenerUsuarios() {
+    return this.usersService.findAll();  // Método que obtiene todos los usuarios
   }
 
   // Consulta para obtener un usuario por su ID
