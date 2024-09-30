@@ -1,7 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './user.entity/user.entity';
-// Creamos un DTO para la respuesta del login
 import { BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { LoginResponse } from './dto/login-response.dto';
@@ -17,6 +16,11 @@ export class UsersResolver {
   @Query(returns => [User])
   async obtenerUsuarios() {
     return this.usersService.findAll();  // Método que obtiene todos los usuarios
+  }
+
+  @Query(() => [User])
+  async obtenerUsuariosSinGrupo(): Promise<User[]> {
+    return this.usersService.findUsersWithoutGroup();
   }
 
   // Consulta para obtener un usuario por su ID

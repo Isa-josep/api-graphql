@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { User } from './user.entity/user.entity';
 import * as bcrypt from 'bcrypt';
 import { GrupoUsuario } from 'src/groups/group.entity/grupo-usuario.entity';
@@ -43,11 +43,26 @@ export class UsersService {
   }
 
   // Método para encontrar usuarios sin grupo
+  // async findUsersWithoutGroup(): Promise<User[]> {
+  //   return await this.usersRepository
+  //     .createQueryBuilder('user')
+  //     .leftJoin('user.grupoUsuarios', 'grupoUsuario')
+  //     .where('grupoUsuario.id IS NULL') // Asegúrate de que el usuario no esté en ningún grupo
+  //     .getMany();
+  // }
   async findUsersWithoutGroup(): Promise<User[]> {
-    return await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoin('user.grupoUsuarios', 'grupoUsuario')
-      .where('grupoUsuario.id IS NULL') // Asegúrate de que el usuario no esté en ningún grupo
-      .getMany();
+    const usuariosConGrupo = await this.grupoUsuariosRepository.find({
+      select: ['usuario_id'],
+    });
+  
+    const idsUsuariosConGrupo = usuariosConGrupo.map(rel => rel.usuario_id);
+  
+    return this.usersRepository.find({
+      where: idsUsuariosConGrupo.length
+        ? { id: Not(In(idsUsuariosConGrupo)) } // Excluye a los usuarios con grupo
+        : {}, // Si no hay usuarios con grupo, trae todos
+    });
   }
+  
+  
 }
