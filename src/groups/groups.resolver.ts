@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { GroupsService } from './groups.service';
 import { Group } from './group.entity/group.entity';
-
+import { AddUserToGroupDto } from './add-user-to-group.dto';
 @Resolver(of => Group)
 export class GroupsResolver {
   constructor(private readonly groupsService: GroupsService) {}
@@ -23,11 +23,13 @@ async createGroup(
 
 
   // Mutación para agregar un usuario a un grupo
-  @Mutation(returns => Boolean)
-  async addUserToGroup(
-    @Args('groupId', { type: () => Int }) groupId: number,
-    @Args('userId', { type: () => Int }) userId: number,
-  ) {
-    return this.groupsService.addUserToGroup(groupId, userId);
-  }
+  @Mutation(() => Boolean)
+async addUserToGroup(
+  @Args('groupId') groupId: number,
+  @Args('userId') userId: number,
+) {
+  // Crea el DTO
+  const addUserToGroupDto: AddUserToGroupDto = { groupId, userId };
+  return this.groupsService.addUserToGroup(addUserToGroupDto);
+}
 }
