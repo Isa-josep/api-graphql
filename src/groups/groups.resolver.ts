@@ -25,11 +25,13 @@ async createGroup(
   // Mutación para agregar un usuario a un grupo
   @Mutation(() => Boolean)
 async addUserToGroup(
-  @Args('groupId') groupId: number,
-  @Args('userId') userId: number,
-) {
-  // Crea el DTO
+  @Args('groupId', { type: () => Int }) groupId: number,
+  @Args('userId', { type: () => Int }) userId: number,
+): Promise<boolean> {
   const addUserToGroupDto: AddUserToGroupDto = { groupId, userId };
-  return this.groupsService.addUserToGroup(addUserToGroupDto);
+  const success = await this.groupsService.addUserToGroup(addUserToGroupDto);
+  return success; // Devolviendo un booleano
 }
+
+
 }
