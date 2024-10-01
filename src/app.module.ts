@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GroupsModule } from './groups/groups.module';
 import { RoutinesModule } from './routines/routines.module';
 import { UsersModule } from './users/users.module';
+import { VideosModule } from './videos/videos.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UsersModule } from './users/users.module';
     GroupsModule,
     RoutinesModule,
     UsersModule,
+    VideosModule,
   ],
 })
 export class AppModule {}

@@ -12,25 +12,27 @@ export class RoutinesResolver {
   }
 
   @Mutation(returns => Routine)
-  async createRoutine(
-    @Args('nombre') nombre: string,
-    @Args('descripcion') descripcion: string,
-    @Args('usuario_id', { type: () => Int }) usuario_id: number,
-    @Args('grupo_id', { type: () => Int }) grupo_id: number,
-    @Args('fecha_ejercicio') fecha_ejercicio: Date,  // Fecha programada
-    @Args('video_url', { nullable: true }) video_url?: string,
-  ) {
-    const creado_en = new Date();  // Fecha de creación automática
-    return this.routinesService.create({
-      nombre,
-      descripcion,
-      usuario_id,
-      grupo_id,
-      video_url,
-      creado_en,
-      fecha_ejercicio,
-    });
-  }
+async createRoutine(
+  @Args('nombre') nombre: string,
+  @Args('descripcion', { nullable: true }) descripcion: string | null, // Cambiado a nullable
+  @Args('usuario_id', { type: () => Int }) usuario_id: number,
+  @Args('grupo_id', { type: () => Int }) grupo_id: number,
+  @Args('fecha_ejercicio') fecha_ejercicio: Date,
+  @Args('video_url', { nullable: true }) video_url?: string,
+) {
+  const creado_en = new Date();
+  return this.routinesService.create({
+    nombre,
+    descripcion,
+    usuario_id,
+    grupo_id,
+    video_url,
+    creado_en,
+    fecha_ejercicio,
+  });
+}
+
+
 
   @Query(returns => [Routine])
   async routinesByGroup(@Args('grupo_id', { type: () => Int }) grupo_id: number) {
