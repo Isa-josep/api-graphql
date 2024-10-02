@@ -17,7 +17,7 @@ async createRoutine(
   @Args('descripcion', { nullable: true }) descripcion: string | null, // Cambiado a nullable
   @Args('usuario_id', { type: () => Int }) usuario_id: number,
   @Args('grupo_id', { type: () => Int }) grupo_id: number,
-  @Args('fecha_ejercicio') fecha_ejercicio: Date,
+  @Args('fecha_ejercicio') fecha_ejercicio: String,
   @Args('video_url', { nullable: true }) video_url?: string,
 ) {
   const creado_en = new Date();
@@ -40,7 +40,10 @@ async createRoutine(
   }
 
   @Query(returns => [Routine])
-  async routinesByDate(@Args('fecha_ejercicio') fecha_ejercicio: Date) {
-    return this.routinesService.findByDate(fecha_ejercicio);
-  }
+async routinesByDate(@Args('fecha_ejercicio', { type: () => String }) fecha_ejercicio: string) {
+  // Ajusta el servicio para recibir fecha_ejercicio como string en lugar de Date
+  return this.routinesService.findByDate(fecha_ejercicio);
+}
+
+
 }

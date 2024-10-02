@@ -30,7 +30,7 @@ export class Routine {
 
   @Column()
   @Field()
-  fecha_ejercicio: Date;  // Campo para la fecha programada de la rutina
+  fecha_ejercicio: String;  // Campo para la fecha programada de la rutina
 
   @Column()
   @Field()
