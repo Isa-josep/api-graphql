@@ -1,35 +1,31 @@
-
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Video } from './videos.entities/video.entity';
 
 @Injectable()
 export class VideoService {
-  private videos: Video[] = [];
+  constructor(
+    @InjectRepository(Video)
+    private videoRepository: Repository<Video>,
+  ) {}
 
-  findAll(): Video[] {
-    return this.videos;
+  async findAll(): Promise<Video[]> {
+    return this.videoRepository.find(); // Busca todos los videos en la base de datos
   }
 
-  create(videoData: { titulo: string; url: string }): Video {
-    const video = {
-      id: this.videos.length + 1,
-      ...videoData,
-    };
-    this.videos.push(video);
-    return video;
+  async create(videoData: { titulo: string; url: string }): Promise<Video> {
+    const video = this.videoRepository.create(videoData); // Crea una instancia de Video
+    return this.videoRepository.save(video); // Guarda el video en la base de datos
   }
 
-  update(id: number, updateData: { titulo: string; url: string }): Video {
-    const video = this.videos.find((v) => v.id === id);
-    if (video) {
-      video.titulo = updateData.titulo;
-      video.url = updateData.url;
-    }
-    return video;
+  async update(id: number, updateData: { titulo: string; url: string }): Promise<Video> {
+    await this.videoRepository.update(id, updateData); // Actualiza el video
+    return this.videoRepository.findOneBy({ id }); // Retorna el video actualizado
   }
 
-  remove(id: number): boolean {
-    this.videos = this.videos.filter((v) => v.id !== id);
+  async remove(id: number): Promise<boolean> {
+    await this.videoRepository.delete(id); // Elimina el video por su ID
     return true;
   }
 }

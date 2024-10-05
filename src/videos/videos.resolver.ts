@@ -1,37 +1,39 @@
-// videos/videos.resolver.ts
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { VideoService } from './videos.service';
 import { Video } from './videos.entities/video.entity';
-
 
 @Resolver(() => Video)
 export class VideoResolver {
   constructor(private readonly videoService: VideoService) {}
 
+  // Marcar la función como asíncrona
   @Query(() => [Video], { name: 'obtenerVideos' })
-  obtenerVideos() {
-    return this.videoService.findAll();
+  async obtenerVideos(): Promise<Video[]> {
+    return await this.videoService.findAll();
   }
 
+  // Marcar la función como asíncrona y devolver una Promesa de tipo Video
   @Mutation(() => Video)
-  addVideo(
+  async addVideo(
     @Args('titulo') titulo: string,
     @Args('url') url: string,
-  ): Video {
-    return this.videoService.create({ titulo, url });
+  ): Promise<Video> {
+    return await this.videoService.create({ titulo, url });
   }
 
+  // Marcar la función como asíncrona y devolver una Promesa de tipo Video
   @Mutation(() => Video)
-  updateVideo(
+  async updateVideo(
     @Args('id', { type: () => Int }) id: number,
     @Args('titulo') titulo: string,
     @Args('url') url: string,
-  ): Video {
-    return this.videoService.update(id, { titulo, url });
+  ): Promise<Video> {
+    return await this.videoService.update(id, { titulo, url });
   }
 
+  // Marcar la función como asíncrona y devolver una Promesa de tipo boolean
   @Mutation(() => Boolean)
-  deleteVideo(@Args('id', { type: () => Int }) id: number): boolean {
-    return this.videoService.remove(id);
+  async deleteVideo(@Args('id', { type: () => Int }) id: number): Promise<boolean> {
+    return await this.videoService.remove(id);
   }
 }
